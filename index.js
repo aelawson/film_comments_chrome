@@ -8,7 +8,7 @@ function pollPage(callback) {
     }, 500);
 }
 
-// Update information on the NetflixPage object.
+// Update information on the given data object.
 function updatePageInfo(data, location) {
     data.id = getContentId(location);
     data.name = getContentName();
@@ -16,7 +16,7 @@ function updatePageInfo(data, location) {
     data.timeTotal = getContentTimeTotal();
 }
 
-// Check if we are on a content page.
+// Check if we are on a Netflix content page.
 function isContentPage(location) {
     if (stringContains(location, "watch")) {
         return true;
@@ -24,7 +24,7 @@ function isContentPage(location) {
     return false;
 }
 
-// Check if the timeRemaining value has changed.
+// Check if the timeRemaining value in our data object has changed.
 function timeHasChanged(data, prevTime) {
     if (data.timeRemaining != prevTime) {
         return true;
@@ -32,29 +32,34 @@ function timeHasChanged(data, prevTime) {
     return false;
 }
 
+
+// Get the Netflix content id integer from the url.
 function getContentId(location) {
     var id = location.split("watch/")[1].split("?")[0];
     return id;
 }
 
+// Get the name of the content from Netflix page.
 function getContentName() {
     var name = $('#netflix-player .playback-longpause-container .content h2').text();
     return name;
 }
 
+// Get the time remaining (in seconds) from the Netflix page.
 function getContentTimeRemaining() {
     var timeRemaining = $('#netflix-player .player-slider').find('label').text();
     var normalized = normalizeTimeRemaining(timeRemaining);
     return normalized;
 }
 
+// Get the total running time (in minutes) from the Netflix page.
 function getContentTimeTotal() {
     var timeTotal = $('#netflix-player .playback-longpause-container .content h3 span')[2].innerText;
     var normalized = normalizeTimeTotal(timeTotal);
     return normalized;
 }
 
-// Returns time remaining in seconds.
+// Normalize/parse time remaining to seconds.
 function normalizeTimeRemaining(timestamp) {
     var time = timestamp.split(':');
     if (time.length == 3) {
@@ -68,7 +73,7 @@ function normalizeTimeRemaining(timestamp) {
     }
 }
 
-// Returns time total in minutes.
+// Normalize/parse time total in minutes.
 function normalizeTimeTotal(timestamp) {
     var time = timestamp.split(' ');
     time[0] = time[0].replace('h', '');
