@@ -14,10 +14,16 @@
 				"http://*.netflix.com/*",
 				"https://*.netflix.com/*"
 			],
-			"js" : ["lib/jquery.min.js", "index.js"]
+			"js" : [
+				"lib/jquery.min.js",
+				"index.js"
+			]
 		}
 	],
 	"background" : {
-		"scripts" : ["background.js"]
+		"scripts" : [
+			"lib/socket.io.js",
+			"background.js"
+		]
 	}
 }

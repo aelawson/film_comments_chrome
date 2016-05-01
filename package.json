@@ -1,0 +1,25 @@
+{
+  "name": "film_comments_chrome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "hiredis": "^0.4.1",
+    "redis-connection": "^4.0.3",
+    "socket.io": "^1.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aelawson/film_comments_chrome.git"
+  },
+  "author": "Andrew Lawson <aeriklawson@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aelawson/film_comments_chrome/issues"
+  },
+  "homepage": "https://github.com/aelawson/film_comments_chrome#readme"
+}

@@ -1,11 +1,12 @@
 var NetflixLocation;
 var NetflixContent;
+var chromePort;
 
 // Poll the page for various data.
-function pollPage() {
-    updatePageLocation();
-    updatePageInfo();
-    console.log(NetflixContent);
+function pollPage(callback) {
+    setInterval(function() {
+        callback();
+    }, 1000);
 }
 
 // Update current location.
@@ -72,13 +73,13 @@ function getContentTimeTotal() {
 function normalizeTimeRemaining(timestamp) {
     var time = timestamp.split(':');
     if (time.length == 3) {
-        return (time[0] * (60 * 60)) + (time[1] * 60) + time[2];
+        return (parseInt(time[0]) * (60 * 60)) + (parseInt(time[1]) * 60) + parseInt(time[2]);
     }
     else if (time.length == 2) {
-        return (time[0] * 60) + time[1];
+        return (parseInt(time[0]) * 60) + parseInt(time[1]);
     }
     else {
-        return time[0];
+        return parseInt(time[0]);
     }
 }
 
@@ -87,7 +88,7 @@ function normalizeTimeTotal(timestamp) {
     var time = timestamp.split(' ');
     time[0] = time[0].replace('h', '');
     time[1] = time[1].replace('m', '');
-    return (time[0] * 60) + time[1];
+    return (parseInt(time[0]) * 60) + parseInt(time[1]);
 }
 
 // Check if a source string contains a target string.
@@ -98,7 +99,27 @@ function stringContains(source, target) {
     return false;
 }
 
+// Initialize runtime connection to background script.
+function initializeBackgroundPort() {
+    chromePort = chrome.runtime.connect({ name: "Timestamp" });
+    chromePort.onMessage.addListener(function(message) {
+        if (message.data != null) {
+            console.log(message.data);
+        }
+        else {
+            console.log("Error in receiving data.");
+        }
+    });
+    console.log("Initialized background port.");
+}
+
+// Send data to background script through runtime port.
+function sendDataToBackground(data) {
+    chromePort.postMessage({ data: data })
+}
+
 $(document).ready(function() {
+    initializeBackgroundPort();
     // Object containg information about the Netflix page we are on.
     NetflixContent = {
         id: null,
@@ -107,7 +128,9 @@ $(document).ready(function() {
         timeTotal: null
     };
     NetflixLocation = document.location.href;
-    setInterval(function() {
-        pollPage();
-    }, 1000);
+    pollPage(function() {
+        updatePageLocation();
+        updatePageInfo();
+    });
+    sendDataToBackground("Test");
 });
