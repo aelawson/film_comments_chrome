@@ -12,11 +12,10 @@ function initializeContentPort() {
     chrome.runtime.onConnect.addListener(function(chromePort) {
         // Assert that this is the 'Timestamp' channel.
         console.assert(chromePort.name == 'Timestamp');
-        chromePort.onMessage.addListener(function(message) {
-            if (message.data != null) {
-                console.log("Received: " + message.data);
-                chromePort.postMessage({ data: "Received" });
-                socket.emit('timestamp', { timestamp: message.data });
+        chromePort.onMessage.addListener(function(data) {
+            if (data != null) {
+                socket.emit('timestamp', data);
+                console.log(data);
             }
             else {
                 console.log("Error.");

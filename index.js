@@ -1,54 +1,39 @@
-var NetflixLocation;
-var NetflixContent;
 var chromePort;
 
 // Poll the page for various data.
 function pollPage(callback) {
+    var prevTime = 0;
     setInterval(function() {
-        callback();
-    }, 1000);
-}
-
-// Update current location.
-function updatePageLocation() {
-    var currLocation = document.location.href;
-    if(currLocation != NetflixLocation) {
-        NetflixLocation = currLocation;
-    }
+        prevTime = callback(prevTime);
+    }, 500);
 }
 
 // Update information on the NetflixPage object.
-function updatePageInfo() {
-    if (isContentPage()) {
-        NetflixContent.id = getContentId();
-        NetflixContent.name = getContentName();
-        NetflixContent.timeRemaining = getContentTimeRemaining();
-        NetflixContent.timeTotal = getContentTimeTotal();
-    }
+function updatePageInfo(data, location) {
+    data.id = getContentId(location);
+    data.name = getContentName();
+    data.timeRemaining = getContentTimeRemaining();
+    data.timeTotal = getContentTimeTotal();
 }
 
 // Check if we are on a content page.
-function isContentPage() {
-    if (stringContains(NetflixLocation, "watch")) {
+function isContentPage(location) {
+    if (stringContains(location, "watch")) {
         return true;
     }
     return false;
 }
 
-// Parse and return the current url.
-function parseUrl() {
-    var anchor = $('<a>', { href: NetflixLocation })[0];
-    var urlParsed = {
-        hostname: anchor.hostname,
-        pathname: anchor.pathname,
-        query: anchor.search,
-        hash: anchor.hash
-    };
-    return urlParsed;
+// Check if the timeRemaining value has changed.
+function timeHasChanged(data, prevTime) {
+    if (data.timeRemaining != prevTime) {
+        return true;
+    }
+    return false;
 }
 
-function getContentId() {
-    var id = NetflixLocation.split("watch/")[1].split("?")[0];
+function getContentId(location) {
+    var id = location.split("watch/")[1].split("?")[0];
     return id;
 }
 
@@ -115,22 +100,25 @@ function initializeBackgroundPort() {
 
 // Send data to background script through runtime port.
 function sendDataToBackground(data) {
-    chromePort.postMessage({ data: data })
+    chromePort.postMessage(data)
 }
 
 $(document).ready(function() {
     initializeBackgroundPort();
-    // Object containg information about the Netflix page we are on.
-    NetflixContent = {
-        id: null,
-        name: null,
-        timeRemaining: null,
-        timeTotal: null
-    };
-    NetflixLocation = document.location.href;
-    pollPage(function() {
-        updatePageLocation();
-        updatePageInfo();
+    pollPage(function(prevTime) {
+        var data = {
+            id: null,
+            name: null,
+            timeRemaining: null,
+            timeTotal: null
+        };
+        var location = document.location.href;
+        if (isContentPage(location)) {
+            updatePageInfo(data, location);
+            if (timeHasChanged(data, prevTime)) {
+                sendDataToBackground(JSON.stringify(data));
+            }
+        }
+        return data.timeRemaining;
     });
-    sendDataToBackground("Test");
 });
