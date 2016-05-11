@@ -10,8 +10,8 @@ function pollPage(callback) {
 
 // Update information on the given data object.
 function updatePageInfo(data, location) {
-    data.id = getContentId(location);
-    data.name = getContentName();
+    data.contentId = getContentId(location);
+    data.contentName = getContentName();
     data.timeRemaining = getContentTimeRemaining();
     data.timeTotal = getContentTimeTotal();
 }
@@ -91,7 +91,7 @@ function stringContains(source, target) {
 
 // Initialize runtime connection to background script.
 function initializeBackgroundPort() {
-    chromePort = chrome.runtime.connect({ name: "Timestamp" });
+    chromePort = chrome.runtime.connect({ name: "Timestamps" });
     chromePort.onMessage.addListener(function(message) {
         if (message.data != null) {
             console.log(message.data);
@@ -100,7 +100,6 @@ function initializeBackgroundPort() {
             console.log("Error in receiving data.");
         }
     });
-    console.log("Initialized background port.");
 }
 
 // Send data to background script through runtime port.
@@ -112,8 +111,9 @@ $(document).ready(function() {
     initializeBackgroundPort();
     pollPage(function(prevTime) {
         var data = {
-            id: null,
-            name: null,
+            userId: "1337",
+            contentId: null,
+            contentName: null,
             timeRemaining: null,
             timeTotal: null
         };

@@ -4,6 +4,7 @@
 	"description" : "Serve Netflix content identifiers and corresponding timestamps.",
 	"version" : "0.1",
 	"permissions" : [
+		"identity",
 		"activeTab",
 		"https://ajax.googleapis.com/"
 	],
