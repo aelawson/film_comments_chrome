@@ -32,7 +32,6 @@ function timeHasChanged(data, prevTime) {
     return false;
 }
 
-
 // Get the Netflix content id integer from the url.
 function getContentId(location) {
     var id = location.split("watch/")[1].split("?")[0];
