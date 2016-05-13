@@ -9,7 +9,7 @@
 		"https://ajax.googleapis.com/"
 	],
 	"browser_action": {
-		"default_icon": "static/images/icon.png",
+		"default_icon": "assets/images/icon.png",
 		"default_popup": "popup.html"
 	},
 	"content_scripts" : [
@@ -20,7 +20,7 @@
 				"https://*.netflix.com/*"
 			],
 			"js" : [
-				"lib/jquery.min.js",
+				"bower_components/jquery/dist/jquery.min.js",
 				"scripts/index.js"
 			]
 		}
