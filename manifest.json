@@ -8,6 +8,10 @@
 		"activeTab",
 		"https://ajax.googleapis.com/"
 	],
+	"browser_action": {
+		"default_icon": "static/images/icon.png",
+		"default_popup": "popup.html"
+	},
 	"content_scripts" : [
 		{
 			"all_frames": true,
@@ -17,14 +21,14 @@
 			],
 			"js" : [
 				"lib/jquery.min.js",
-				"index.js"
+				"scripts/index.js"
 			]
 		}
 	],
 	"background" : {
 		"scripts" : [
 			"lib/socket.io.js",
-			"background.js"
+			"scripts/background.js"
 		]
 	}
 }
